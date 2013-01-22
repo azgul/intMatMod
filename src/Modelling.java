@@ -1,6 +1,7 @@
 
 public class Modelling {
 	public static void main(String[] args) {
+		// change these arrays
 		double[] px = {.1, .4, .5};
 		double[] x = {0, 1, 2};
 		double[] py = {.1, .4, .5};
@@ -12,9 +13,80 @@ public class Modelling {
 		double VarX = variance(px, x, EX);
 		double VarY = variance(py, y, EY);
 		
-		int a = 1;
-		int b = -3;
-		double VarXY = variance(a, b, VarX, VarY);
+		
+		int a = 1; // change this
+		int b = -3; // change this
+		double VarXY = variance(a, b, VarX, VarY); // calculates combined variance
+		
+		int limit = 0; // change this
+		probability(px, x, limit, ">"); // change operator
+		limit = 0; // change this
+		probability(px, x, py, y, limit, "<", "<="); // change operators
+	}
+	
+	private static double probability(double[] px, double[] x, double[] py, double[] y, int limit, String operator1, String operator2) {
+		double result = 0;
+		
+		String res = "";
+		
+		System.out.println(String.format("Finding the probability of P(%s %s X %s Y)", limit, operator1, operator2));
+		
+		for (int i = 0; i < px.length; i++)
+			for (int j = 0; j < py.length; j++)
+				if (operator1.equals("<") && operator2.equals("<=")) {
+					if (limit < x[i] && x[i] <= y[j]) {
+						result += px[i] * py[j];
+						res += String.format("%s * %s + ", px[i], py[j]);
+					}
+				} else if (operator1.equals("<") && operator2.equals("<")) {
+					if (limit < x[i] && x[i] < y[j]) {
+						result += px[i] * py[j];
+						res += String.format("%s * %s + ", px[i], py[j]);
+					}
+				}
+		
+		res = res.substring(0, res.length()-2);
+		
+		System.out.println(String.format("%s= %s", res, result));
+		
+		return result;
+	}
+	
+	private static double probability(double[] px, double[] x, int limit, String operator) {
+		double result = 0;
+		
+		String res = "";
+
+		System.out.println(String.format("Finding the probability of P(X%s%s)", operator, limit));
+		
+		for (int i = 0; i < px.length; i++) {
+			if (operator.equals(">"))
+				if (x[i] > limit) {
+					result += px[i];
+					res += px[i] + " + ";
+				}
+			if (operator.equals("<"))
+				if (x[i] < limit) {
+					result += px[i];
+					res += px[i] + " + ";
+				}
+			if (operator.equals("<="))
+				if (x[i] <= limit) {
+					result += px[i];
+					res += px[i] + " + ";
+				}
+			if (operator.equals(">="))
+				if (x[i] >= limit) {
+					result += px[i];
+					res += px[i] + " + ";
+				}
+		}
+		
+		res = res.substring(0, res.length()-2);
+		
+		System.out.println(String.format("%s= %s\n", res, result));
+		
+		return result;
 	}
 	
 	private static double median(double[] px, double[] x) {
