@@ -24,14 +24,23 @@ public class Modelling {
 		probability(0, "<", px, x, "<=", py, y); // change operators
 
 		likelihoodFunction(px, x, py, y);
+		
+		double[] pz = {.19, .16, .4, .25};
+		double[] z = {0, 1, 2, 4};
+		
+		double EZ = mean(pz, z);
+		
+		likelihoodFunction(pz, z, px, x);
+		
+		double pzx[] = {.271, .064, .24, .3, .125};
+		double zx[] = {0, 1, 2, 4, 8};
+		
+		double EZX = mean(pzx, zx);
+	
+		covariance(EZX, EZ, EX);
 	}
 	
-	private static void likelihoodFunction(double[] px, double[] x, double[] py, double[] y) {
-		double[] pz = new double[5];
-		double[] z = new double[5];
-		
-		double incr;
-		
+	private static void likelihoodFunction(double[] px, double[] x, double[] py, double[] y) {		
 		ArrayList<Integer> combinations = new ArrayList<Integer>();
 		
 		for (int j = 0; j < 5; j++)
@@ -55,28 +64,18 @@ public class Modelling {
 						intermediate += String.format("%s * %s + ", px[j], py[k]);
 					}
 			
-			intermediate = intermediate.substring(0, intermediate.length()-3);
+			try {
+				intermediate = intermediate.substring(0, intermediate.length()-3);
+			} catch (StringIndexOutOfBoundsException e) {continue;}
 			
 			System.out.println(String.format("Probability for %s (%s): %s", i, intermediate, probability));
 		}
 	}
 	
-	private static double covariance(double[] px, double[] x, double[] py, double[] y, double EX, double EY) {
-		double result = 0;
+	private static double covariance(double EXY, double EX, double EY) {
+		double result = EXY - EX*EY;
 		
-		for (int i = 0; i < px.length; i++)
-			result += (x[i]-EX) * (y[i]-EY) * px[i] * py[i];
-		
-		System.out.println(result);
-		
-		return result;
-	}
-	
-	private static double[] dotProduct(double[] px, double py[]) {
-		double[] result = new double[px.length];
-		
-		for (int i = 0; i < px.length; i++)
-			result[i] = px[i] * py[i];
+		System.out.println(String.format("Cov(X,Y) = E(XY) - EX * EY = %s - %s * %s = %s", EXY, EX, EY, result));
 		
 		return result;
 	}
