@@ -4,10 +4,10 @@ import java.util.ArrayList;
 public class Modelling {
 	public static void main(String[] args) {
 		// change these arrays
-		double[] px = {.1, .4, .5};
-		double[] x = {0, 1, 2};
-		double[] py = {.1, .4, .5};
-		double[] y = {0, 1, 2};
+		double[] px = {.25, .25, .25, .25};
+		double[] x = {-1, 0, 1, 2};
+		double[] py = px;
+		double[] y = x;
 
 		double EX = mean(px, x);
 		double EY = mean(py, y);
@@ -17,13 +17,13 @@ public class Modelling {
 		
 		
 		int a = 1; // change this
-		int b = -3; // change this
+		int b = -2; // change this
 		double VarXY = variance(a, b, VarX, VarY); // calculates combined variance
 		
 		probability(0, ">", px, x); // change operator
-		probability(0, "<", px, x, "<=", py, y); // change operators
+		probability(0, "<=", px, x, "<", py, y); // change operators
 
-		likelihoodFunction(px, x, py, y);
+		/*likelihoodFunction(px, x, py, y);
 		
 		double[] pz = {.19, .16, .4, .25};
 		double[] z = {0, 1, 2, 4};
@@ -37,7 +37,7 @@ public class Modelling {
 		
 		double EZX = mean(pzx, zx);
 	
-		covariance(EZX, EZ, EX);
+		covariance(EZX, EZ, EX);*/
 	}
 	
 	private static void likelihoodFunction(double[] px, double[] x, double[] py, double[] y) {		
@@ -96,6 +96,16 @@ public class Modelling {
 					}
 				} else if (operator1.equals("<") && operator2.equals("<")) {
 					if (limit < x[i] && x[i] < y[j]) {
+						result += px[i] * py[j];
+						res += String.format("%s * %s + ", px[i], py[j]);
+					}
+				} else if (operator1.equals("<=") && operator2.equals("<")) {
+					if (limit <= x[i] && x[i] < y[j]) {
+						result += px[i] * py[j];
+						res += String.format("%s * %s + ", px[i], py[j]);
+					}
+				} else if (operator1.equals("<=") && operator2.equals("<=")) {
+					if (limit <= x[i] && x[i] <= y[j]) {
 						result += px[i] * py[j];
 						res += String.format("%s * %s + ", px[i], py[j]);
 					}
